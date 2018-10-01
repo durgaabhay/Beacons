@@ -1,0 +1,121 @@
+{ "results": [
+	{
+        "discount": 10,
+        "name": "Pineapple",
+        "image": "pineapple.png",
+        "price": 1.18,
+        "region": "produce"
+    },
+	{
+        "discount": 10,
+        "name": "Croissants",
+        "image": "croissants.png",
+        "price": 2.79,
+        "region": "grocery"
+    },
+	{
+        "discount": 20,
+        "name": "Brach's Jelly Beans",
+        "image": null,
+        "price": 2.21,
+        "region": "grocery"
+    },
+	{
+        "discount": 20,
+        "name": "Dial Soap",
+        "image": "jelly_beans.png",
+        "price": 2.99,
+        "region": "lifestyle"
+    },
+	{
+        "discount": 10,
+        "name": "Oranges",
+        "image": "oranges.png",
+        "price": 0.89,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "Scotch Brite Sponges",
+        "image": "scotch_brite_sponges.png",
+        "price": 5.89,
+        "region": "lifestyle"
+    },
+	{
+        "discount": 15,
+        "name": "Fresh Express Lettuce",
+        "image": "lettuce.jpg",
+        "price": 3.69,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "Coca Cola",
+        "image": "coca_cola.png",
+        "price": 6.99,
+        "region": "grocery"
+    },
+	{
+        "discount": 10,
+        "name": "Gatorade",
+        "image": "gatorade.png",
+        "price": 3.89,
+        "region": "grocery"
+    },
+	{
+        "discount": 10,
+        "name": "Organix Conditioner",
+        "image": "organix_conditioner.png",
+        "price": 13.46,
+        "region": "lifestyle"
+    },
+	{
+        "discount": 10,
+        "name": "Spinach",
+        "image": "spinach.png",
+        "price": 1.23,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "Cranberry Cocktail",
+        "image": "cranberry_cocktail.png",
+        "price": 1.89,
+        "region": "grocery"
+    },
+	{
+        "discount": 20,
+        "name": "Milk",
+        "image": "milk.jpg",
+        "price": 10.5,
+        "region": "grocery"
+    },
+	{
+        "discount": 15,
+        "name": "HI-C Fruit Punch",
+        "image": "hi_c_fruit_punch.png",
+        "price": 4.67,
+        "region": "grocery"
+    },
+	{
+        "discount": 10,
+        "name": "Nectarines",
+        "image": "fresh_nectarines.png",
+        "price": 3.67,
+        "region": "produce"
+    },
+	{
+        "discount": 10,
+        "name": "Fresh Seedless Whole Watermelon",
+        "image": "watermellon.jpg",
+        "price": 6.99,
+        "region": "produce"
+    },
+	{
+        "discount": 15,
+        "name": "US Weekly",
+        "image": "us_weekly.png",
+        "price": 4.99,
+        "region": "lifestyle"
+    }
+] }
