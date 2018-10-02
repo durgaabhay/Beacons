@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 public class DiscountsAdapter extends RecyclerView.Adapter<DiscountsAdapter.ViewHolder> {
@@ -41,49 +43,8 @@ public class DiscountsAdapter extends RecyclerView.Adapter<DiscountsAdapter.View
         holder.discount.setText(discount.getDiscount());
         holder.price.setText(discount.getPrice());
         holder.product.setText(discount.getName());
-        if(discount.getRegion().equals("lifestyle")){
-            if(discount.getImage().equals("jelly_beans.png")){
-                holder.productImage.setImageResource(R.drawable.jelly_beans);
-            }else if(discount.getImage().equals("scotch_brite_sponges.png")){
-                holder.productImage.setImageResource(R.drawable.scotch_brite_sponges);
-            }else if(discount.getImage().equals("organix_conditioner.png")){
-                holder.productImage.setImageResource(R.drawable.organix_conditioner);
-            }else{
-                holder.productImage.setImageResource(R.drawable.us_weekly);
-            }
-        }else if(discount.getRegion().equals("produce")){
-            if(discount.getImage().equals("pineapple.png")){
-                holder.productImage.setImageResource(R.drawable.pineapple);
-            }else if(discount.getImage().equals("oranges.png")){
-                holder.productImage.setImageResource(R.drawable.oranges);
-            }else if(discount.getImage().equals("lettuce.png")){
-                holder.productImage.setImageResource(R.drawable.lettuce);
-            }else if(discount.getImage().equals("spinach.png")){
-                holder.productImage.setImageResource(R.drawable.spinach);
-            }else if(discount.getImage().equals("fresh_nectarines.png")){
-                holder.productImage.setImageResource(R.drawable.fresh_nectarines);
-            }else{
-                holder.productImage.setImageResource(R.drawable.watermellon);
-            }
-        }else{
-            if(discount.getImage().equals("croissants.png")){
-                holder.productImage.setImageResource(R.drawable.croissants);
-            }else if(discount.getImage().equals("coca_cola.png")){
-                holder.productImage.setImageResource(R.drawable.coca_cola);
-            }else if(discount.getImage().equals("gatorade.png")){
-                holder.productImage.setImageResource(R.drawable.gatorade);
-            }else if(discount.getImage().equals("cranberry_cocktail.png")){
-                holder.productImage.setImageResource(R.drawable.cranberry_cocktail);
-            }else if(discount.getImage().equals("milk.jpg")){
-                holder.productImage.setImageResource(R.drawable.milk);
-            }else if(discount.getImage().equals("hi_c_fruit_punch.png")){
-                holder.productImage.setImageResource(R.drawable.hi_c_fruit_punch);
-            }else{
-                //holder.productImage.set;
-            }
-        }
-
         holder.region.setText(discount.getRegion());
+        Picasso.with(context).load(discount.getPhoto()).centerCrop().into(holder.productImage);
     }
 
     @Override

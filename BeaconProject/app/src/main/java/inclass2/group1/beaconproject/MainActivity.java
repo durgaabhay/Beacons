@@ -21,13 +21,6 @@ import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.estimote.coresdk.observation.region.beacon.BeaconRegion;
 import com.estimote.coresdk.recognition.packets.Beacon;
 import com.estimote.coresdk.service.BeaconManager;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -42,7 +35,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import inclass2.group1.beaconproject.dataTable.DatabaseDataManager;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,14 +54,9 @@ public class MainActivity extends AppCompatActivity {
     public RecyclerView.Adapter mAdapter;
     public RecyclerView.LayoutManager mLayoutManager;
 
-    public FirebaseAuth mAuth;
-    public DatabaseReference mDatabase;
-
-    DatabaseDataManager databaseDataManager;
-
-    public static String LIFESTYLE = "lifestyle";
-    public static String GROCERY = "grocery";
-    public static String PRODUCE = "produce";
+    public static String loadLifestyle = "http://ec2-18-222-225-70.us-east-2.compute.amazonaws.com:3000/lifestyleDiscounts";
+    public static String loadProduce = "http://ec2-18-222-225-70.us-east-2.compute.amazonaws.com:3000/produceDiscounts";
+    public static String loadGrocery = "http://ec2-18-222-225-70.us-east-2.compute.amazonaws.com:3000/groceryDiscounts";
 
     ProgressDialog progressDialog;
     DiscountInfo discountInfo;
@@ -72,18 +64,15 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Discounts> grocery = new ArrayList<Discounts>();
     ArrayList<Discounts> produce = new ArrayList<Discounts>();
 
+    private final OkHttpClient client = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseApp.initializeApp(this);
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
         section = findViewById(R.id.textViewSection);
 
-        databaseDataManager = new DatabaseDataManager(this);
         mRecyclerView = findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
@@ -91,8 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setTitle("Welcome to Smart Discounts!");
-        loadDiscounts();
+        progressDialog.setTitle("Loading discounts!");
 
         beaconManager = new BeaconManager(this);
         region1 = new BeaconRegion("Produce",
@@ -111,30 +99,27 @@ public class MainActivity extends AppCompatActivity {
                     Beacon nearestBeacon = beacons.get(0);
                     Log.d("test", "nearest beacon is : " + nearestBeacon.getMajor() + nearestBeacon.getMinor());
                     if(nearestBeacon.getMajor()==1564 && nearestBeacon.getMinor()==34409){
+                        progressDialog.show();
+                        loadDiscounts(loadProduce);
                         section.setText("Discounts from Produce");
-                        mAdapter = new DiscountsAdapter(getApplicationContext(),produce);
-                        mRecyclerView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
                     }else if(nearestBeacon.getMajor()==55125 && nearestBeacon.getMinor()==738){
+                        progressDialog.show();
+                        loadDiscounts(loadGrocery);
                         section.setText("Discounts from Lifestyle");
-                        mAdapter = new DiscountsAdapter(getApplicationContext(),lifestyle);
-                        mRecyclerView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
                     }else if(nearestBeacon.getMajor()==59599 && nearestBeacon.getMinor()==33091){
+                        progressDialog.show();
+                        loadDiscounts(loadLifestyle);
                         section.setText("Discounts from Grocery");
-                        mAdapter = new DiscountsAdapter(getApplicationContext(),grocery);
-                        mRecyclerView.setAdapter(mAdapter);
-                        mAdapter.notifyDataSetChanged();
                     }
                 }
             }
         });
     }
 
-    @Override
+   @Override
     protected void onResume() {
         super.onResume();
-        SystemRequirementsChecker.checkWithDefaultDialogs(this);
+//        SystemRequirementsChecker.checkWithDefaultDialogs(this);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
             public void onServiceReady() {
@@ -153,7 +138,37 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    private void loadDiscounts() {
+    private void loadDiscounts(String loadURL){
+        final Request request = new Request.Builder().url(loadURL).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("test", "onFailure:"  + e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.isSuccessful()){
+                    final String result = response.body().toString();
+                    Log.d("test", "onResponse: " + result);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Gson gson = new Gson();
+                            discountInfo = gson.fromJson(result,DiscountInfo.class);
+                            mAdapter = new DiscountsAdapter(getApplicationContext(),produce);
+                            mRecyclerView.setAdapter(mAdapter);
+                            mAdapter.notifyDataSetChanged();
+                            progressDialog.dismiss();
+                        }
+                    });
+
+                }
+            }
+        });
+    }
+
+    /*private void loadDiscounts() {
         try {
             String readFile = readJsonFile();
             Log.d("test", "reading json string file : " + readFile);
@@ -165,52 +180,11 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         progressDialog.dismiss();
-    }
+    }*/
 
-    private void groupDiscounts(DiscountInfo discountInfo) {
-        for(Discounts info:discountInfo.getDiscountDetails()){
-//            databaseDataManager.save(info);
-            if(info.getRegion().equals(LIFESTYLE)){
-                lifestyle.add(info);
-                if(mDatabase.child("discounts")==null){
-                    mDatabase.child("discounts").child("lifestyle").push().setValue(info);
-                }
-            }else if(info.getRegion().equals(GROCERY)){
-                grocery.add(info);
-                if(mDatabase.child("discounts")==null){
-                    mDatabase.child("discounts").child("grocery").push().setValue(info);
-                }
-            }else{
-                produce.add(info);
-                if(mDatabase.child("discounts")==null) {
-                    mDatabase.child("discounts").child("produce").push().setValue(info);
-                }
-            }
-        }
-        Log.d("test", "After grouping LifeStyle List is : " + lifestyle.size());
-        Log.d("test", "After grouping LifeStyle List is : " + grocery.size());
-        Log.d("test", "After grouping LifeStyle List is : " + produce.size());
-
-        /*List<Discounts> notes = databaseDataManager.getAll();//reads all the data
-        Log.d("test", "Entered all the data into the DB: " + notes.toString());*/
-        if(mDatabase.getDatabase()!=null){
-            mDatabase.child("discounts").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d("test", "onDataChange: " +dataSnapshot.getChildren());
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-        }
-    }
 
     @Override
     protected void onDestroy() {
-        databaseDataManager.close();
         super.onDestroy();
     }
 

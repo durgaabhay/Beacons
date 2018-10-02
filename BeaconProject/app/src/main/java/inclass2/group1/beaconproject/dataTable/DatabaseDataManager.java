@@ -1,3 +1,4 @@
+/*
 package inclass2.group1.beaconproject.dataTable;
 
 import android.content.Context;
@@ -52,3 +53,4 @@ public class DatabaseDataManager {
     }
 
 }
+*/

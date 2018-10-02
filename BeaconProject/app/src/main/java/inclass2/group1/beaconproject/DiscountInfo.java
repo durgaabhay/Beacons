@@ -4,24 +4,24 @@ import java.util.ArrayList;
 
 public class DiscountInfo {
 
-    ArrayList<Discounts> results;
+    ArrayList<Discounts> data;
 
-    public DiscountInfo(ArrayList<Discounts> discountDetails) {
-        this.results = discountDetails;
+    public DiscountInfo(ArrayList<Discounts> data) {
+        this.data = data;
     }
 
     @Override
     public String toString() {
         return "DiscountInfo{" +
-                "discountDetails=" + results +
+                "discountDetails=" + data +
                 '}';
     }
 
     public ArrayList<Discounts> getDiscountDetails() {
-        return results;
+        return data;
     }
 
     public void setDiscountDetails(ArrayList<Discounts> discountDetails) {
-        this.results = discountDetails;
+        this.data = discountDetails;
     }
 }

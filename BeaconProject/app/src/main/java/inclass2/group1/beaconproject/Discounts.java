@@ -5,15 +5,15 @@ import java.io.Serializable;
 public class Discounts implements Serializable {
 
 
-    private long id;
-    String discount,name,image,price,region;
+    private long _id;
+    String discount,name,photo,price,region;
 
     public Discounts() {
     }
 
-    public Discounts(String discount, String image, String region, String name, String price) {
+    public Discounts(String discount, String photo, String region, String name, String price) {
         this.discount = discount;
-        this.image = image;
+        this.photo = photo;
         this.region = region;
         this.name = name;
         this.price = price;
@@ -24,18 +24,18 @@ public class Discounts implements Serializable {
         return "Discounts{" +
                 " discount='" + discount + '\'' +
                 ", name='" + name + '\'' +
-                ", image='" + image + '\'' +
+                ", photo='" + photo + '\'' +
                 ", price='" + price + '\'' +
                 ", region='" + region + '\'' +
                 '}';
     }
 
     public long getId() {
-        return id;
+        return _id;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setId(long _id) {
+        this._id = _id;
     }
 
     public String getDiscount() {
@@ -54,12 +54,12 @@ public class Discounts implements Serializable {
         this.name = name;
     }
 
-    public String getImage() {
-        return image;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setImage(String photo) {
-        this.image = photo;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getPrice() {
