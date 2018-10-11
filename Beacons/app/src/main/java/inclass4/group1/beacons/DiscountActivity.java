@@ -52,9 +52,9 @@ public class DiscountActivity extends AppCompatActivity {
     private final OkHttpClient client = new OkHttpClient();
 
 
-    public static String loadLifestyle = "http://ec2-18-188-105-169.us-east-2.compute.amazonaws.com:3000/lifestyleDiscounts";
-    public static String loadProduce = "http://18.188.105.169:3000/produceDiscounts";
-    public static String loadGrocery = "http://ec2-18-188-105-169.us-east-2.compute.amazonaws.com:3000/groceryDiscounts";
+    public static String loadLifestyle = "http://ec2-18-224-20-0.us-east-2.compute.amazonaws.com:3000/lifestyleDiscounts";
+    public static String loadProduce = "http://ec2-18-224-20-0.us-east-2.compute.amazonaws.com:3000/produceDiscounts";
+    public static String loadGrocery = "http://ec2-18-224-20-0.us-east-2.compute.amazonaws.com:3000/groceryDiscounts";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,33 +81,41 @@ public class DiscountActivity extends AppCompatActivity {
             @Override
             public void onBeaconsDiscovered(BeaconRegion region, List<Beacon> list) {
                 Log.d("test", "onBeaconsDiscovered: " + list.size() + region);
+                for(Beacon immediateBeacon:list){
+//                    while(immediateBeacon.getMeasuredPower())
+                }
                if (!list.isEmpty()) {
                     for(int i=0;i<list.size();i++){
                         Beacon nearestBeacon = list.get(i);
                         Log.d("test", "onBeaconsDiscovered: " + nearestBeacon.getMajor()+ ":" + nearestBeacon.getMinor());
                         if(nearestBeacon.getMajor() == 1564 && nearestBeacon.getMinor() == 34409){
+                            Log.d("test", "Transmit Power of Produce: "+ nearestBeacon.getMeasuredPower());
+                            Log.d("test", "Produce - Signal Strength Received " + nearestBeacon.getRssi());
                             section.setText("Discounts of Produce");
                             loadDiscounts(loadProduce);
                             break;
                         }else if(nearestBeacon.getMajor() == 55125 && nearestBeacon.getMinor() == 738){
+                            Log.d("test", "Transmit Power of Grocery: "+ nearestBeacon.getMeasuredPower());
+                            Log.d("test", "Grocery - Signal Strength Received " + nearestBeacon.getRssi());
                             section.setText("Discounts of Grocery");
                             loadDiscounts(loadGrocery);
                             break;
                         }else if(nearestBeacon.getMajor() == 59599 && nearestBeacon.getMinor() == 33091){
+                            Log.d("test", "Transmit Power of Lifestyle: "+ nearestBeacon.getMeasuredPower());
+                            Log.d("test", "Lifestyle - Signal Strength Received " + nearestBeacon.getRssi());
                             section.setText("Discounts of Lifestyle");
                             loadDiscounts(loadLifestyle);
                             break;
                         }
                     }
                 }else{
+                   section.setText("All discounts");
                    mAdapter = new DiscountAdapter(getApplicationContext(),allDiscounts);
                    mRecyclerView.setAdapter(mAdapter);
                    mAdapter.notifyDataSetChanged();
                 }
             }
         });
-
-
     }
 
     private void loadAllDiscounts() {
@@ -116,10 +124,9 @@ public class DiscountActivity extends AppCompatActivity {
             Gson gson = new Gson();
             allDiscounts = gson.fromJson(readFile,DiscountInfo.class);
             Log.d("test", "Loading discount list : " + allDiscounts.toString());
-            section.setText("View all discounts");
-            mAdapter = new DiscountAdapter(getApplicationContext(),allDiscounts);
+            /*mAdapter = new DiscountAdapter(getApplicationContext(),allDiscounts);
             mRecyclerView.setAdapter(mAdapter);
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();*/
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -151,7 +158,6 @@ public class DiscountActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         SystemRequirementsChecker.checkWithDefaultDialogs(this);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override
